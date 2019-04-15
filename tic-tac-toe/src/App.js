@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import cloneDeep from "lodash/cloneDeep";
 import "./App.css";
 
 function Block({ pos, grid, onClick }) {
@@ -16,13 +17,13 @@ const GameStatus = {
 };
 
 class App extends Component {
-  state = {
+  initState = {
     grid: Array(9).fill(null),
     turn: "O",
     gameStatus: GameStatus.Init
   };
 
-  check = {
+  initCheck = {
     rows: Array(3).fill(0),
     cols: Array(3).fill(0),
     diagonal: 0,
@@ -30,19 +31,30 @@ class App extends Component {
     total: 0
   };
 
+  state = this.initState;
+  check = this.initCheck;
+
+  start = () => {
+    this.check = cloneDeep(this.initCheck);
+    this.setState({
+      ...this.initState,
+      gameStatus: GameStatus.Playing
+    });
+  };
+
   move = pos => {
     const { grid, turn } = this.state;
 
     if (grid[pos] === null) {
       const newGrid = [...grid];
-      const gameStatus = this.gameCheck(pos);
-      console.log(gameStatus);
+      const [gameStatus, winner] = this.gameCheck(pos);
 
       newGrid[pos] = turn;
       this.setState({
         grid: newGrid,
         turn: turn === "O" ? "X" : "O",
-        gameStatus
+        gameStatus,
+        winner
       });
     }
   };
@@ -62,17 +74,20 @@ class App extends Component {
       Math.abs(this.check.rows[row]) === 3 ||
       Math.abs(this.check.cols[col]) === 3 ||
       Math.abs(this.check.diagonal) === 3 ||
-      Math.abs(this.check.antiDiagonal) === 3 ||
-      this.check.total === 9
+      Math.abs(this.check.antiDiagonal) === 3
     ) {
-      return GameStatus.End;
+      return [GameStatus.End, this.state.turn];
     }
 
-    return GameStatus.Playing;
+    if (this.check.total === 9) {
+      return [GameStatus.End, null];
+    }
+
+    return [GameStatus.Playing, null];
   };
 
   render() {
-    const { grid } = this.state;
+    const { grid, winner, gameStatus } = this.state;
 
     return (
       <div className="container">
@@ -93,6 +108,23 @@ class App extends Component {
             <Block pos={8} grid={grid} onClick={this.move} />
           </div>
         </div>
+        {gameStatus !== GameStatus.Playing && <div className="overlay" />}
+        {gameStatus === GameStatus.Init && (
+          <div className="panel">
+            <div>Tic Tac Toe</div>
+            <div className="start-btn" onClick={this.start}>
+              Start
+            </div>
+          </div>
+        )}
+        {gameStatus === GameStatus.End && (
+          <div className="panel">
+            <div>{`Game Over: ${winner ? `${winner} Win` : "Draw"}`}</div>
+            <div className="start-btn" onClick={this.start}>
+              Start Over
+            </div>
+          </div>
+        )}
       </div>
     );
   }
