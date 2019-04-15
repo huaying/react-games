@@ -62,7 +62,7 @@ class App extends Component {
   gameCheck = pos => {
     const add = this.state.turn === "O" ? 1 : -1;
     const row = Math.floor(pos / 3);
-    const col = Math.floor(pos % 3);
+    const col = pos % 3;
 
     this.check.rows[row] += add;
     this.check.cols[col] += add;
