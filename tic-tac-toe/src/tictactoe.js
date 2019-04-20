@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import cloneDeep from "lodash/cloneDeep";
-import "./App.css";
+import "./tictactoe.css";
 
 function Block({ pos, grid, onClick }) {
   return (
@@ -16,7 +16,7 @@ const GameStatus = {
   End: "End"
 };
 
-class App extends Component {
+class TicTacToe extends Component {
   initState = {
     grid: Array(9).fill(null),
     turn: "O",
@@ -130,4 +130,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default TicTacToe;
