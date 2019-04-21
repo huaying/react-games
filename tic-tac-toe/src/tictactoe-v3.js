@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import cloneDeep from "lodash/cloneDeep";
-import { Strategy } from "./ai";
+import React, { useState, useEffect } from "react";
+import shuffle from "lodash/shuffle";
+import range from "lodash/range";
 import "./tictactoe.css";
 
 function Block({ pos, grid, onClick }) {
@@ -25,17 +25,78 @@ const initState = {
   you: null
 };
 
-const initCheck = {
-  rows: Array(3).fill(0),
-  cols: Array(3).fill(0),
-  diagonal: 0,
-  antiDiagonal: 0,
-  total: 0
+const Strategy = {
+  random: grid => {
+    const avail = [];
+    grid.forEach((block, i) => {
+      if (block === null) avail.push(i);
+    });
+
+    if (avail.length === 0) return null;
+    return avail[Math.floor(Math.random() * avail.length)];
+  },
+
+  minimax: (grid, turn) => {
+    const [gameStatus, winner] = gameCheck(grid);
+    if (gameStatus === GameStatus.End) {
+      if (winner === null) return [null, 0];
+      return [null, -1];
+    }
+
+    let score = Number.MIN_SAFE_INTEGER;
+    let posChoice = null;
+    const nextTurn = turn === "O" ? "X" : "O";
+
+    for (let pos of shuffle(range(grid.length))) {
+      if (grid[pos] === null) {
+        grid[pos] = turn;
+
+        const [, oppoScore] = Strategy.minimax(grid, nextTurn);
+        if (-oppoScore > score) {
+          score = -oppoScore;
+          posChoice = pos;
+        }
+
+        grid[pos] = null;
+
+        if (score === 1) break;
+      }
+    }
+    return [posChoice, score];
+  }
+};
+
+const WIN_CONDITIONS = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+const gameCheck = grid => {
+  if (grid.filter(block => block === null).length === 0) {
+    return [GameStatus.End, null];
+  }
+
+  for (const cond of WIN_CONDITIONS) {
+    if (cond.filter(idx => grid[idx] === "O").length === 3) {
+      return [GameStatus.End, "O"];
+    }
+
+    if (cond.filter(idx => grid[idx] === "X").length === 3) {
+      return [GameStatus.End, "X"];
+    }
+  }
+
+  return [GameStatus.Playing, null];
 };
 
 function TicTacToe() {
   const [state, setState] = useState(initState);
-  const check = useRef(null);
   const { grid, turn, gameStatus, winner, you } = state;
 
   useEffect(() => {
@@ -44,7 +105,6 @@ function TicTacToe() {
   }, [state]);
 
   const start = choice => {
-    check.current = cloneDeep(initCheck);
     setState(preState => ({
       ...preState,
       grid: Array(9).fill(null),
@@ -58,14 +118,15 @@ function TicTacToe() {
   const move = pos => {
     if (grid[pos] === null) {
       const newGrid = [...grid];
-      const [gameStatus, winner] = gameCheck(pos);
+      newGrid[pos] = turn;
+
+      const [gameStatus, winner] = gameCheck(newGrid);
 
       let nextTurn = turn === "O" ? "X" : "O";
       if (gameStatus !== GameStatus.Playing) {
         nextTurn = null;
       }
 
-      newGrid[pos] = turn;
       setState(preState => ({
         ...preState,
         grid: newGrid,
@@ -77,40 +138,13 @@ function TicTacToe() {
   };
 
   const youMove = pos => {
-    const { turn, you } = state;
     if (turn === you) move(pos);
   };
 
   const aiMove = () => {
-    const pos = Strategy.random(state.grid);
+    // const pos = Strategy.random(state.grid);
+    const [pos] = Strategy.minimax(grid, turn);
     move(pos);
-  };
-
-  const gameCheck = pos => {
-    const add = turn === "O" ? 1 : -1;
-    const row = Math.floor(pos / 3);
-    const col = pos % 3;
-
-    check.current.rows[row] += add;
-    check.current.cols[col] += add;
-    if ([0, 4, 8].includes(pos)) check.current.diagonal += add;
-    if ([2, 4, 6].includes(pos)) check.current.antiDiagonal += add;
-    check.current.total++;
-
-    if (
-      Math.abs(check.current.rows[row]) === 3 ||
-      Math.abs(check.current.cols[col]) === 3 ||
-      Math.abs(check.current.diagonal) === 3 ||
-      Math.abs(check.current.antiDiagonal) === 3
-    ) {
-      return [GameStatus.End, turn];
-    }
-
-    if (check.current.total === 9) {
-      return [GameStatus.End, null];
-    }
-
-    return [GameStatus.Playing, null];
   };
 
   return (
