@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import TicTacToe from "./tictactoe-v2";
+import TicTacToe from "./tictactoe-v3";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(<TicTacToe />, document.getElementById("root"));

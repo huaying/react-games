@@ -78,3 +78,12 @@
 .row:last-child {
   border-bottom: none;
 }
+
+.actions {
+  display: flex;
+}
+
+.actions > div {
+  margin-left: 10px;
+  margin-right: 10px;
+}
