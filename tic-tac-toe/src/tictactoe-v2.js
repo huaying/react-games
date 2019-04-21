@@ -109,7 +109,7 @@ function TicTacToe() {
       )}
       {gameStatus === GameStatus.End && (
         <div className="panel">
-          <div>{`Game Over: ${winner ? `${winner} Win` : "Draw"}`}</div>
+          <div>{winner ? `Winner: ${winner}` : "Draw"}</div>
           <div className="start-btn" onClick={start}>
             Start Over
           </div>

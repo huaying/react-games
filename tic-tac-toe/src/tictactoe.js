@@ -20,6 +20,7 @@ class TicTacToe extends Component {
   initState = {
     grid: Array(9).fill(null),
     turn: "O",
+    winner: null,
     gameStatus: GameStatus.Init
   };
 
@@ -119,7 +120,7 @@ class TicTacToe extends Component {
         )}
         {gameStatus === GameStatus.End && (
           <div className="panel">
-            <div>{`Game Over: ${winner ? `${winner} Win` : "Draw"}`}</div>
+            <div>{winner ? `Winner: ${winner}` : "Draw"}`}</div>
             <div className="start-btn" onClick={this.start}>
               Start Over
             </div>
