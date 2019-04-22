@@ -34,7 +34,7 @@ function App() {
             render={() => <TicTacToeAI difficulty="impossible" />}
           />
           <Route path="/2players/" exact component={TicTacToe} />
-          <Route path="/" render={() => <TicTacToeAI />} />
+          <Route path="/" render={() => <TicTacToeAI key="default" />} />
         </Switch>
       </div>
     </Router>
