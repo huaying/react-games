@@ -95,7 +95,7 @@ const gameCheck = grid => {
   return [GameStatus.Playing, null];
 };
 
-function TicTacToe() {
+function TicTacToe({ difficulty }) {
   const [state, setState] = useState(initState);
   const { grid, turn, gameStatus, winner, you } = state;
 
@@ -142,13 +142,19 @@ function TicTacToe() {
   };
 
   const aiMove = () => {
-    // const pos = Strategy.random(state.grid);
-    const [pos] = Strategy.minimax(grid, turn);
+    let pos;
+
+    if (difficulty === "impossible") {
+      [pos] = Strategy.minimax(grid, turn);
+    } else {
+      pos = Strategy.random(state.grid);
+    }
+
     move(pos);
   };
 
   return (
-    <div className="container">
+    <div className="game">
       <div className="box">
         <div className="row">
           <Block pos={0} grid={grid} onClick={youMove} />

@@ -1,14 +1,11 @@
-.container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.game {
   position: relative;
 }
 
 .overlay {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 300px;
   height: 300px;
   background: white;
@@ -17,6 +14,8 @@
 
 .panel {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 300px;
   height: 300px;
   display: flex;
@@ -24,7 +23,7 @@
   justify-content: center;
   align-items: center;
 
-  font-size: 28px;
+  font-size: 40px;
   font-weight: 500;
   text-transform: uppercase;
 }
@@ -32,11 +31,14 @@
 .start-btn {
   font-size: 16px;
   font-weight: 300;
-  border: 1px solid #cccccc;
+  border:2px solid #cccccc;
   padding: 8px 12px;
   border-radius: 3px;
-  margin-top: 80px;
-  background: #eeeeee;
+  margin-top: 50px;
+  background: white;
+  text-align: center;
+  font-weight: bold;
+  color: #767676;
   cursor: pointer;
   transition: all .3s;
 }
@@ -51,7 +53,6 @@
   flex-direction: column;
   width: 300px;
   height: 300px;
-  margin: auto;
 }
 
 .block {
@@ -86,4 +87,5 @@
 .actions > div {
   margin-left: 10px;
   margin-right: 10px;
+  width: 40px;
 }

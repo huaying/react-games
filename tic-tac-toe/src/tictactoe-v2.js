@@ -80,7 +80,7 @@ function TicTacToe() {
   };
 
   return (
-    <div className="container">
+    <div className="game">
       <div className="box">
         <div className="row">
           <Block pos={0} grid={grid} onClick={move} />
