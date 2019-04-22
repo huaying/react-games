@@ -5,6 +5,10 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites": [{
+      "source": "/tic-tac-toe/**",
+      "destination": "/tic-tac-toe/index.html"
+    }]
   }
 }
