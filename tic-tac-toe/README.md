@@ -1,3 +1,3 @@
 # Tic Tac Toe
 
-https://react-games.tk/tic-tac-toe
+https://react-games-b6177.firebaseapp.com/tic-tac-toe/
